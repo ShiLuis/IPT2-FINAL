@@ -2,24 +2,28 @@
 export default {
   content: [
     "./index.html",
-    "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        'brand-gold': '#D4AF37',
         'brand-black': '#1A1A1A',
-        'brand-white': '#FFFFFF',
-        'brand-gray': '#B0B0B0',
-        'brand-red': '#C0392B',
-        'brand-green': '#27AE60',
+        'brand-gold': '#D4AF37', 
+        'brand-gray': '#A1A1A1',
+        'brand-white': '#F7F7F7',
+        'brand-red': '#EF4444',
+        'brand-green': '#10B981',
       },
       fontFamily: {
-        montserrat: ['Montserrat', 'sans-serif'],
-        opensans: ['Open Sans', 'sans-serif'],
-        kaushan: ['Kaushan Script', 'cursive'],
-      }
+        'montserrat': ['Montserrat', 'sans-serif'],
+        'opensans': ['Open Sans', 'sans-serif'],
+        'kaushan': ['"Kaushan Script"', 'cursive'],
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms'),
+    require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
+  ],
 }

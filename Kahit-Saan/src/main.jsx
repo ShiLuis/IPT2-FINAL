@@ -1,10 +1,32 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from './theme'; // Your custom MUI theme
+import { BrowserRouter } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext'; // Import AuthProvider
+import './index.css'; // For global styles, Tailwind base/components/utilities if you mix
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// Import Google Fonts (ensure these are also in your public/index.html)
+import '@fontsource/montserrat/400.css';
+import '@fontsource/montserrat/600.css';
+import '@fontsource/montserrat/700.css';
+import '@fontsource/open-sans/400.css';
+import '@fontsource/open-sans/600.css';
+// If using Kaushan Script for logo:
+// import '@fontsource/kaushan-script';
+
+
+ReactDOM.createRoot(document.getElementById('root')).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <AuthProvider> {/* Wrap with AuthProvider */}
+        <ThemeProvider theme={theme}>
+          <CssBaseline /> {/* Normalizes styles and applies background color */}
+          <App />
+        </ThemeProvider>
+      </AuthProvider> {/* Close AuthProvider */}
+    </BrowserRouter>
+  </React.StrictMode>
+);

@@ -1,43 +1,48 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const dotenv = require('dotenv');
-const menuRoutes = require('./menu.routes');
 
-// Load environment variables
+// Load .env variables first
 dotenv.config();
 
-// Create Express app
+const connectDB = require('./config/db');
+
+// Ensure models are loaded/registered BEFORE routes that use them
+require('./models/MenuItem'); // This ensures the MenuItem schema is registered with Mongoose
+require('./models/AdminUser'); // This ensures the AdminUser schema is registered with Mongoose
+
+// Now require routes (which in turn require controllers that use the models)
+const menuRoutes = require('./routes/menuRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes'); // Add this line
+
 const app = express();
-const PORT = process.env.PORT || 5000;
+
+// Connect Database
+connectDB();
 
 // Middleware
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // for parsing application/json
+app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-// Routes
+// API Routes
 app.use('/api/menu', menuRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes); // Add this line
 
-// Health check route
 app.get('/', (req, res) => {
-  res.send('Kahit Saan Restaurant API is running');
+  res.send('Kahit Saan API is running...');
 });
 
-// MongoDB connection
-mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/kahit-saan')
-  .then(() => {
-    console.log('Connected to MongoDB');
-    // Start server
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  })
-  .catch((error) => {
-    console.error('Failed to connect to MongoDB:', error);
+// Basic Error Handler
+app.use((err, req, res, next) => {
+  console.error("Global Error Handler:", err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || 'An unexpected error occurred',
+    error: process.env.NODE_ENV === 'development' ? err : {}
   });
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (error) => {
-  console.error('Unhandled Promise Rejection:', error);
 });
+
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

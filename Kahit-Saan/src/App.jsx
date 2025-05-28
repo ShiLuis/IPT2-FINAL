@@ -1,14 +1,59 @@
-// In your App.js or relevant router file
-import React from 'react';
-import LandingPage from './pages/LandingPage'; // Adjust path as needed
-import './App.css'; // Or your main CSS file where Tailwind is imported
+import React, { Suspense, lazy } from "react";
+import { Routes, Route } from "react-router-dom";
+import Box from "@mui/material/Box";
+import CircularProgress from "@mui/material/CircularProgress";
+
+// Public Pages/Components (Lazy Loaded)
+const LandingPage = lazy(() => import("./pages/LandingPage"));
+
+// Admin Pages/Components (Lazy Loaded)
+const AdminLayout = lazy(() => import("./layouts/AdminLayout"));
+const AdminMenuManagementPage = lazy(() => import("./pages/Admin/AdminMenuManagementPage"));
+const AdminUserManagementPage = lazy(() => import("./pages/Admin/AdminUserManagementPage"));
+const AdminLoginPage = lazy(() => import("./pages/Admin/AdminLoginPage"));
+const PrivateRoute = lazy(() => import("./assets/components/admin/PrivateRoute")); // <-- ADD THIS LINE
+
+// Loading component for Suspense fallback
+const LoadingFallback = () => (
+  <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100vh" }}>
+    <CircularProgress />
+  </Box>
+);
 
 function App() {
   return (
-    <div>
-      <LandingPage />
-      {/* You can add Routes here for other pages like Admin Panel */}
-    </div>
+    <Suspense fallback={<LoadingFallback />}>
+      <Routes>
+        {/* Public Route */}
+        <Route
+          path="/"
+          element={
+            // The LandingPage component itself contains its navigation
+            <LandingPage />
+          }
+        />
+
+        <Route path="/login" element={<AdminLoginPage />} />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <PrivateRoute>
+              <AdminLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route index element={<AdminMenuManagementPage />} /> {/* Set Menu Management as index */}
+          <Route path="menu" element={<AdminMenuManagementPage />} />
+          <Route path="users" element={<AdminUserManagementPage />} />
+          {/* <Route path="dashboard" element={<AdminDashboardPage />} /> Remove this line if dashboard is fully removed */}
+        </Route>
+
+        {/* Optional: 404 Not Found Page */}
+        {/* <Route path="*" element={<NotFoundPage />} /> */}
+      </Routes>
+    </Suspense>
   );
 }
 

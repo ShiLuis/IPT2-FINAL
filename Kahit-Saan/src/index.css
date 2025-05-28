@@ -3,13 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --primary: #D4AF37;  /* Gold */
-  --secondary: #000000;  /* Black */
-  --text-dark: #000000;
-  --text-light: #B0B0B0;  /* Ash Gray */
-  --white: #FFFFFF;
-  --success: #27AE60;  /* Leaf Green */
-  --danger: #C0392B;  /* Crimson Red */
+  --color-brand-black: #1A1A1A;
+  --color-brand-gold: #D4AF37;
+  --color-brand-gray: #A1A1A1;
+  --color-brand-white: #F7F7F7;
+}
+
+body {
+  font-family: 'Open Sans', sans-serif;
+  color: var(--color-brand-black);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Montserrat', sans-serif;
 }
 
 @layer base {
@@ -126,7 +132,7 @@
   flex-direction: column;
   min-height: 100vh;
   width: 100%;
-  max-width: 100%;
+  max-width: 100%; /* This can be problematic, usually 100vw or just width: 100% */
   padding: 0;
   margin: 0;
 }

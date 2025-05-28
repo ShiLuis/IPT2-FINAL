@@ -1,82 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { MapPin, Phone, Mail, Facebook, Instagram, Twitter, ChefHat, UtensilsCrossed, ScrollText, Navigation } from 'lucide-react';
-import './LandingPage.css'; // Import the external CSS file
+import axios from 'axios';
+import { Link as RouterLink } from 'react-router-dom';
+import {
+    MapPin, Phone, Mail, Facebook, Instagram, Twitter, ChefHat,
+    UtensilsCrossed, ScrollText, Menu as MenuIconLucide, X as CloseIconLucide
+} from 'lucide-react';
+import {
+    AppBar, Toolbar, Typography, Button, IconButton, Container, Box, Grid,
+    Card, CardMedia, CardContent, CircularProgress, Alert, Link as MuiLink, Drawer,
+    List, ListItem, ListItemButton, ListItemText, Paper, useTheme, useMediaQuery
+} from '@mui/material';
+import { alpha } from '@mui/material/styles';
 
-// Sample menu items based on the provided image
-const initialMenuItems = [
-    {
-        id: 1,
-        name: "Shanghai Chaofan",
-        description: "Classic savory fried rice with Shanghai-style spring rolls.",
-        price: 75,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Shanghai+Chaofan",
-        category: "Chaofan"
-    },
-    {
-        id: 2,
-        name: "Sweet & Sour Chicken Chaofan",
-        description: "Crispy chicken in sweet and sour sauce served with flavorful fried rice.",
-        price: 90,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Sweet+%26+Sour+Chicken",
-        category: "Chaofan"
-    },
-    {
-        id: 3,
-        name: "Tonkatsu Chaofan",
-        description: "Japanese-style breaded pork cutlet on a bed of delicious chaofan.",
-        price: 90,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Tonkatsu+Chaofan",
-        category: "Chaofan"
-    },
-    {
-        id: 4,
-        name: "Hungarian Chaofan",
-        description: "Spicy Hungarian sausage slices mixed with our signature fried rice.",
-        price: 85,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Hungarian+Chaofan",
-        category: "Chaofan"
-    },
-    {
-        id: 5,
-        name: "Tokwa't Baboy Chaofan",
-        description: "A Filipino favorite: fried tofu and pork belly, served with chaofan.",
-        price: 80,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Tokwa't+Baboy",
-        category: "Chaofan"
-    },
-    {
-        id: 6,
-        name: "Sharksfin Chaofan",
-        description: "Flavorful chaofan with mock sharksfin for a unique taste.",
-        price: 75,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Sharksfin+Chaofan",
-        category: "Chaofan"
-    },
-    {
-        id: 7,
-        name: "Ramen",
-        description: "Rich and savory broth with noodles, toppings, and a soft-boiled egg.",
-        price: 130,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Ramen",
-        category: "Noodles"
-    },
-    {
-        id: 8,
-        name: "Lechon Kawali Chaofan",
-        description: "Crispy deep-fried pork belly (Lechon Kawali) served with our tasty chaofan.",
-        price: 85,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Lechon+Kawali",
-        category: "Chaofan"
-    },
-    {
-        id: 9,
-        name: "Laksa Noodles",
-        description: "Spicy and creamy coconut-based noodle soup, a Southeast Asian delight.",
-        price: 170,
-        photoUrl: "https://placehold.co/600x400/FDB813/4A4A4A?text=Laksa+Noodles",
-        category: "Noodles"
-    }
-];
+// Ensure Kaushan Script is loaded (e.g., via @fontsource/kaushan-script and import in main.jsx, or a link in index.html)
 
 const LandingPage = () => {
     const [menuItems, setMenuItems] = useState([]);
@@ -84,261 +20,373 @@ const LandingPage = () => {
     const [error, setError] = useState(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    // Simulate fetching menu items
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
     useEffect(() => {
-        // In a real app, you would fetch from your API:
-        // fetch('/api/menu')
-        //   .then(res => res.json())
-        //   .then(data => {
-        //     setMenuItems(data);
-        //     setLoading(false);
-        //   })
-        //   .catch(err => {
-        //     setError(err.message);
-        //     setLoading(false);
-        //   });
-        setMenuItems(initialMenuItems);
-        setLoading(false);
+        const fetchPublicMenuItems = async () => {
+            setLoading(true);
+            try {
+                const response = await axios.get('http://localhost:5000/api/menu'); // User confirmed port 5000
+                setMenuItems(response.data);
+                setError(null);
+            } catch (err) {
+                console.error("Error fetching menu items for landing page:", err);
+                setError(err.response?.data?.message || err.message || "Network Error: Failed to load menu. Please check server and network.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPublicMenuItems();
     }, []);
 
-    const NavLink = ({ href, children }) => (
-        <a
-            href={href}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className="navbar-link"
+    const scrollToSection = (sectionId) => {
+        setIsMobileMenuOpen(false);
+        const section = document.getElementById(sectionId);
+        if (section) {
+            const navbarHeight = document.querySelector('header.MuiAppBar-root')?.offsetHeight || (isMobile ? 64 : 80);
+            const sectionTop = section.getBoundingClientRect().top + window.pageYOffset - navbarHeight;
+            window.scrollTo({ top: sectionTop, behavior: 'smooth' });
+        }
+    };
+    
+    const AdminLoginMuiButton = ({ isMobileView = false }) => (
+        <Button
+            variant="contained"
+            color="primary"
+            component={RouterLink}
+            to="/login"
+            sx={{
+                fontFamily: '"Open Sans", sans-serif',
+                fontWeight: 600,
+                fontSize: '0.875rem',
+                ...(isMobileView ? { width: 'calc(100% - 32px)', my: 2, mx: 2, py: 1.5 } : { ml: 2 })
+            }}
         >
-            {children}
-        </a>
+            Admin Login
+        </Button>
+    );
+
+    const mobileMenuDrawer = (
+        <Drawer
+            anchor="right"
+            open={isMobileMenuOpen}
+            onClose={() => setIsMobileMenuOpen(false)}
+            PaperProps={{sx: {width: '260px', backgroundColor: 'background.default' /* Eerie Black */ }}}
+        >
+            <Box sx={{ width: 260, p:2, display: 'flex', flexDirection: 'column', height: '100%' }} role="presentation">
+                <Box sx={{display: 'flex', justifyContent: 'flex-end', mb:1}}>
+                    <IconButton onClick={() => setIsMobileMenuOpen(false)} sx={{color: 'text.secondary'}}>
+                        <CloseIconLucide />
+                    </IconButton>
+                </Box>
+                <List>
+                    {[{id:'menu', label:'Menu'}, {id:'about', label:'About'}, {id:'location', label:'Location'}, {id:'contact', label:'Contact'}].map((item) => (
+                        <ListItem key={item.id} disablePadding>
+                            <ListItemButton onClick={() => {scrollToSection(item.id); setIsMobileMenuOpen(false);}}>
+                                <ListItemText 
+                                    primary={item.label.toUpperCase()}
+                                    primaryTypographyProps={{ sx: { ...theme.typography.button, color: 'text.primary', textAlign: 'center'} }}
+                                />
+                            </ListItemButton>
+                        </ListItem>
+                    ))}
+                </List>
+                <Box sx={{mt: 'auto', pb:1}}> <AdminLoginMuiButton isMobileView={true} /> </Box>
+            </Box>
+        </Drawer>
+    );
+
+    const LogoAndBrandName = () => (
+         <Box 
+            component="a" href="#hero" onClick={(e) => { e.preventDefault(); scrollToSection('hero'); }}
+            sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer', textDecoration: 'none', color: 'text.primary' }}
+        >
+            <ChefHat sx={{ color: 'primary.main', mr: 1, fontSize: {xs:28, md:32} }} />
+            <Typography variant="h6" sx={{ fontFamily: 'Montserrat', fontWeight: 'bold' }}>
+                <Typography component="span" sx={{ fontFamily: 'Kaushan Script', color: 'primary.main', fontSize: '1.6em', lineHeight: 1, position: 'relative', top: '0.1em'}}>Kahit</Typography>
+                <Typography component="span" sx={{letterSpacing: '0.05em'}}> Saan</Typography>
+            </Typography>
+        </Box>
     );
 
     return (
-        <div>
-            {/* Navigation Bar */}
-            <nav className="navbar">
-                <div className="container navbar-container">
-                    <div className="navbar-brand">
-                        <ChefHat className="navbar-brand-icon" />
-                        <a href="#" className="navbar-brand">
-                            Kahit Saan
-                        </a>
-                    </div>
-                    <div className="navbar-menu">
-                        <NavLink href="#menu">Menu</NavLink>
-                        <NavLink href="#about">About</NavLink>
-                        <NavLink href="#location">Location</NavLink>
-                        <NavLink href="#social">Contact</NavLink>
-                        <a
-                            href="/admin/login"
-                            className="navbar-button"
-                        >
-                            Admin Login
-                        </a>
-                    </div>
-                    <button
-                        onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                        className="mobile-menu-button"
-                        aria-label="Open main menu"
-                    >
-                        <Navigation size={24} />
-                    </button>
-                </div>
-                {/* Mobile Menu */}
-                {isMobileMenuOpen && (
-                    <div className="mobile-menu">
-                        <NavLink href="#menu">Menu</NavLink>
-                        <NavLink href="#about">About</NavLink>
-                        <NavLink href="#location">Location</NavLink>
-                        <NavLink href="#social">Contact</NavLink>
-                        <a
-                            href="/admin/login"
-                            className="navbar-button"
-                        >
-                            Admin Login
-                        </a>
-                    </div>
-                )}
-            </nav>
+        <Box sx={{ backgroundColor: 'background.default', color: 'text.primary' }}> 
+            <AppBar position="fixed" component="header" elevation={0} sx={{ borderBottom: `1px solid ${theme.palette.divider}`}}>
+                <Container maxWidth="lg">
+                    <Toolbar disableGutters sx={{ height: {xs: 64, md: 80} }}>
+                        <LogoAndBrandName />
+                        <Box sx={{ flexGrow: 1 }} />
+                        {isMobile ? (
+                            <IconButton size="large" edge="end" color="inherit" aria-label="open drawer" onClick={() => setIsMobileMenuOpen(true)}>
+                                <MenuIconLucide />
+                            </IconButton>
+                        ) : (
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Button variant="text" onClick={() => scrollToSection('menu')}>MENU</Button>
+                                <Button variant="text" onClick={() => scrollToSection('about')}>ABOUT</Button>
+                                <Button variant="text" onClick={() => scrollToSection('location')}>LOCATION</Button>
+                                <Button variant="text" onClick={() => scrollToSection('contact')}>CONTACT</Button>
+                                <AdminLoginMuiButton />
+                            </Box>
+                        )}
+                    </Toolbar>
+                </Container>
+            </AppBar>
+            {mobileMenuDrawer}
 
             {/* Hero Section */}
-            <header
-                className="hero"
-                style={{ backgroundImage: "url('https://placehold.co/1920x800/FFF8E1/FDB813?text=Delicious+Food+Awaits!')" }}
-            >
-                <div className="hero-overlay">
-                    <div className="container">
-                        <h1 className="hero-title">
-                            <span>Welcome to</span>
-                            <span className="block" style={{ color: 'var(--primary)' }}>Kahit Saan</span>
-                        </h1>
-                        <p className="hero-subtitle">
-                            Your Everyday Delicious, Anywhere in Nueva Vizcaya! Craving Comfort? Kahit Saan Delivers!
-                        </p>
-                        <a
-                            href="#menu"
-                            className="hero-button"
-                        >
-                            View Our Menu <UtensilsCrossed className="ml-2" />
-                        </a>
-                    </div>
-                </div>
-            </header>
+            <Box id="hero" component="section" sx={{
+                minHeight: '100vh', backgroundImage: "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=80')",
+                backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', position: 'relative', pt: {xs: '64px', md: '80px'} 
+            }}>
+                <Box sx={{ position: 'absolute', inset: 0, backgroundColor: alpha(theme.palette.brand.eerieBlack, 0.8) }} />
+                <Container maxWidth="md" sx={{ position: 'relative', zIndex: 1, textAlign: 'center', py: 6 }}>
+                    <Typography variant="h1" component="h1" sx={{ color: 'brand.customWhite', mb: 1, fontSize: {xs: '2.5rem', sm: '3.5rem', md: '4.5rem'} }}>
+                        Welcome to
+                    </Typography>
+                    <Typography variant="h1" component="span" sx={{ fontFamily: 'Kaushan Script', color: 'primary.main', display: 'block', fontSize: {xs: '3rem', sm: '4.5rem', md: '5.5rem'}, lineHeight: 1.1 }}>
+                        Kahit Saan
+                    </Typography>
+                    <Typography variant="h5" component="p" sx={{ color: alpha(theme.palette.brand.customWhite, 0.9), mt: 3, maxWidth: '700px', mx: 'auto', fontFamily: 'Open Sans', fontSize: {xs: '1rem', md: '1.25rem'} }}>
+                        Your Everyday Delicious, Anywhere in Nueva Vizcaya! Craving Comfort? Kahit Saan Delivers!
+                    </Typography>
+                    <Button variant="contained" color="primary" size="large" onClick={() => scrollToSection('menu')} endIcon={<UtensilsCrossed size={20} />}
+                        sx={{ mt: 5, py: 1.5, px: 5, fontFamily: 'Montserrat', fontWeight: 'bold', fontSize: {xs: '0.9rem', md: '1.1rem'} }}
+                    > View Our Menu </Button>
+                </Container>
+            </Box>
 
-            <main>
-                {/* Menu Section */}
-                <section id="menu" className="section section-white">
-                    <div className="container">
-                        <div className="section-header">
-                            <ScrollText className="section-icon" />
-                            <h2 className="section-title">
-                                Our Delicious Menu
-                            </h2>
-                            <p className="section-subtitle">
+            <Box component="main">
+                {/* Menu Section - background.default to match page, Card background also default to blend */}
+                <Box id="menu" component="section" sx={{ py: { xs: 6, md: 10 }, backgroundColor: 'background.default' }}>
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+                            <ScrollText style={{ margin: '0 auto 16px auto', height: 48, width: 48, color: theme.palette.primary.main }} />
+                            <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold' }}> Our Delicious Menu </Typography>
+                            <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2, maxWidth: '600px', mx: 'auto' }}>
                                 Freshly prepared, full of flavor, and always satisfying.
-                            </p>
-                        </div>
-
-                        {loading && <p className="text-center">Loading menu...</p>}
-                        {error && <p className="text-center" style={{ color: 'red' }}>Error: {error}</p>}
-
-                        {!loading && !error && (
-                            <div className="menu-grid">
-                                {menuItems.map((item) => (
-                                    <div key={item.id} className="menu-item">
-                                        <img 
-                                            className="menu-item-image" 
-                                            src={item.photoUrl} 
-                                            alt={item.name} 
-                                            onError={(e) => e.target.src='https://placehold.co/600x400/EEEEEE/AAAAAA?text=Image+Not+Available'} 
-                                        />
-                                        <div className="menu-item-content">
-                                            <div>
-                                                <p className="menu-item-category">
-                                                    {item.category}
-                                                </p>
-                                                <h3 className="menu-item-name">{item.name}</h3>
-                                                <p className="menu-item-description">{item.description}</p>
-                                            </div>
-                                            <div className="menu-item-footer">
-                                                <p className="menu-item-price">
-                                                    ₱{item.price.toFixed(2)}
-                                                </p>
-                                                <button className="menu-item-button">
-                                                    Add to Cart
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                            </Typography>
+                        </Box>
+                        {loading && (
+                            <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}>
+                                <CircularProgress color="primary" />
+                            </Box>
                         )}
-                    </div>
-                </section>
+                        {error && (
+                            <Alert severity="error" sx={{ my: 2 }}>
+                                {error}
+                            </Alert>
+                        )}
+                            {!loading && !error && menuItems.length > 0 && (
+                                <Grid container spacing={5} justifyContent="center">
+                                    {menuItems.map((item) => (
+                                        <Grid
+                                            item
+                                            xs={12}
+                                            sm={6}
+                                            md={4}
+                                            lg={3}
+                                            key={item._id || item.name}
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: 'column',
+                                                alignItems: 'center',
+                                                textAlign: 'center',
+                                                mb: 2,
+                                            }}
+                                        >
+                                            {/* Outer Box for Gold Border and Gap */}
+                                            <Box
+                                                sx={{
+                                                    width: '166px', // 150px (image) + 2*3px (gap) + 2*5px (border)
+                                                    height: '166px',
+                                                    borderRadius: '50%',
+                                                    border: `5px solid ${theme.palette.primary.main}`, // 5px Gold border
+                                                    boxSizing: 'border-box',
+                                                    display: 'flex',
+                                                    justifyContent: 'center',
+                                                    alignItems: 'center',
+                                                    // The padding creates the visual gap. Its background will be the parent's background.
+                                                    // Since the parent <Box id="menu"...> is eerieBlack, this padding area will be eerieBlack.
+                                                    padding: '3px', // This creates the 3px gap between border and image
+                                                    backgroundColor: theme.palette.background.default, // Ensure the gap area is Eerie Black
+                                                }}
+                                            >
+                                                {/* Inner Circular Image */}
+                                                <CardMedia
+                                                    component="img"
+                                                    image={item.photo?.url || `https://placehold.co/150x150/${theme.palette.brand.eerieBlack.substring(1)}/${theme.palette.primary.main.substring(1)}?text=${encodeURIComponent(item.name)}`}
+                                                    alt={item.name}
+                                                    onError={(e) => { e.target.onerror = null; e.target.src=`https://placehold.co/150x150/333333/D4AF37?text=Image+Error`; }}
+                                                    sx={{
+                                                        width: '150px', // Image size
+                                                        height: '150px',
+                                                        borderRadius: '50%',
+                                                        objectFit: 'cover',
+                                                    }}
+                                                />
+                                            </Box>
 
-                {/* About Section */}
-                <section id="about" className="section section-light">
-                    <div className="container">
-                        <div className="section-header">
-                            <ChefHat className="section-icon" />
-                            <p className="about-title">About Us</p>
-                            <h2 className="about-subtitle">
-                                The Story of Kahit Saan
-                            </h2>
-                        </div>
-                        <div className="about-section">
-                            <div className="about-content">
-                                <p>
-                                    Kahit Saan started with a simple idea: to bring flavorful and comforting Filipino-Asian meals to everyone in Nueva Vizcaya, without breaking the bank. We believe good food should be accessible anywhere, anytime. Our chaofan and noodle dishes are made with love, using fresh ingredients, perfect for your daily cravings.
-                                </p>
-                                <h3 className="about-heading">Our Mission</h3>
-                                <p>
-                                    To be the go-to spot in Nueva Vizcaya for delicious, affordable, and convenient meals that feel like home. We are committed to quality ingredients, friendly service, and making every meal a delightful experience.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                                            {/* Item Name */}
+                                            <Typography
+                                                variant="h3"
+                                                component="h3"
+                                                sx={{
+                                                    color: 'primary.main',
+                                                    fontWeight: 700,
+                                                    mt: 2.5,
+                                                    mb: 0.5,
+                                                    fontSize: '1.5rem', // 24px (Style Guide H3)
+                                                    fontFamily: 'Montserrat, sans-serif',
+                                                }}
+                                            >
+                                                {item.name}
+                                            </Typography>
 
-                {/* Location Section */}
-                <section id="location" className="section section-white">
-                    <div className="container">
-                        <div className="section-header">
-                            <MapPin className="section-icon" />
-                            <h2 className="section-title">
-                                Visit Us or Get in Touch
-                            </h2>
-                            <p className="section-subtitle">
-                                We're conveniently located in the heart of Bayombong.
-                            </p>
-                        </div>
-                        <div className="location-container">
-                            <div className="location-info">
-                                <h3>Kahit Saan Restaurant</h3>
-                                <p>
-                                    Purok 5, Barangay Don Mariano Perez,<br />
-                                    Bayombong, 3700 Nueva Vizcaya, Philippines
-                                </p>
-                                <h4>Operating Hours:</h4>
-                                <p>Monday - Sunday: 10:00 AM - 8:00 PM</p>
+                                            {/* Item Description */}
+                                            <Typography
+                                                variant="body1"
+                                                sx={{
+                                                    color: 'text.primary',
+                                                    mb: 1.5,
+                                                    minHeight: { xs: '3.2em', md:'3.2em' },
+                                                    lineHeight: '1.6em',
+                                                    overflow: 'hidden', textOverflow: 'ellipsis',
+                                                    display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+                                                    px: 1,
+                                                    maxWidth: '280px',
+                                                    fontSize: '1rem', // 16px (Style Guide P)
+                                                    fontFamily: '"Open Sans", sans-serif',
+                                                }}
+                                            >
+                                                {item.description}
+                                            </Typography>
 
-                                <h4>Contact Us:</h4>
-                                <div>
-                                    <p className="contact-item">
-                                        <Phone className="contact-icon" /> (078) 123-4567 (Sample)
-                                    </p>
-                                    <p className="contact-item">
-                                        <Mail className="contact-icon" /> info@kahitsaanresto.com (Sample)
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="map-container">
-                                <iframe
-                                    className="map-iframe"
-                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d61054.70701051794!2d121.1130487459675!3d16.48008071654067!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x33905cecd5cbf491%3A0x8d3a1763d6369208!2sBayombong%2C%20Nueva%20Vizcaya!5e0!3m2!1sen!2sph!4v1684321987654!5m2!1sen!2sph"
-                                    allowFullScreen=""
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title="Restaurant Location"
-                                ></iframe>
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                                            {/* Item Price */}
+                                            <Typography
+                                                sx={{
+                                                    typography: 'priceText', // Uses theme.typography.priceText
+                                                }}
+                                            >
+                                                ₱{typeof item.price === 'number' ? item.price.toFixed(2) : 'N/A'}
+                                            </Typography>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            )}
 
-                {/* Social Media / Contact Section */}
-                <section id="social" className="section section-light social-section">
-                    <div className="container">
-                        <h2 className="social-title">
+                        {/* ... No items message ... */}
+                    </Container>
+                </Box>
+
+                {/* About Section - background.default */}
+                <Box id="about" component="section" sx={{ py: { xs: 6, md: 10 }, backgroundColor: 'background.default' }}>
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+                            <ChefHat style={{ margin: '0 auto 16px auto', height: 48, width: 48, color: theme.palette.primary.main }} />
+                            <Typography variant="overline" sx={{ color: 'primary.main', fontWeight: 600, fontSize: '0.9rem', display:'block' }}>Our Story</Typography>
+                            <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold', mt: 1 }}>
+                                The Heart of Kahit Saan
+                            </Typography>
+                        </Box>
+                        <Container maxWidth="md">
+                             <Paper elevation={0} sx={{ p: {xs:3, md:4}, borderRadius: '12px', backgroundColor: alpha(theme.palette.common.white, 0.03) /* Very subtle dark paper */ }}>
+                                <Typography variant="body1" sx={{ textAlign: 'justify', mb: 4, fontSize: {xs: '0.95rem', md: '1.05rem'}, lineHeight: 1.7 }}>
+                                    Kahit Saan began with a simple yet passionate vision...
+                                </Typography>
+                                <Typography variant="h4" component="h3" sx={{ fontWeight: 'bold', mt: {xs:4, md:5}, mb: 2, textAlign: {xs: 'left', sm:'center'} }}>
+                                    Our Mission
+                                </Typography>
+                                <Typography variant="body1" sx={{ textAlign: 'justify', fontSize: {xs: '0.95rem', md: '1.05rem'}, lineHeight: 1.7 }}>
+                                    To be the cherished culinary destination in Nueva Vizcaya...
+                                </Typography>
+                            </Paper>
+                        </Container>
+                    </Container>
+                </Box>
+
+                {/* Location Section - background.default */}
+                <Box id="location" component="section" sx={{ py: { xs: 6, md: 10 }, backgroundColor: 'background.default' }}>
+                    <Container maxWidth="lg">
+                        <Box sx={{ textAlign: 'center', mb: { xs: 6, md: 8 } }}>
+                            <MapPin style={{ margin: '0 auto 16px auto', height: 48, width: 48, color: theme.palette.primary.main }} />
+                            <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold' }}>
+                                Find Us & Get In Touch
+                            </Typography>
+                             <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2, maxWidth: '600px', mx: 'auto' }}>
+                                We're conveniently located in Bayombong. Come visit or give us a call!
+                            </Typography>
+                        </Box>
+                        <Grid container spacing={5} alignItems="center">
+                            <Grid item xs={12} md={6}>
+                                <Paper elevation={0} sx={{ p: {xs: 3, sm:4}, borderRadius: '12px', backgroundColor: alpha(theme.palette.common.white, 0.03) /* Subtle dark paper */}}>
+                                    <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2.5, fontFamily: 'Montserrat' }}>Kahit Saan Restaurant</Typography>
+                                    {/* ... rest of location details ... */}
+                                     <Typography variant="body1" component="address" sx={{ fontStyle: 'normal', color: 'text.secondary', mb: 3 }}>
+                                        Purok 5, Barangay Don Mariano Perez,<br />
+                                        Bayombong, 3700 Nueva Vizcaya, Philippines
+                                    </Typography>
+                                    <Typography variant="h6" component="h4" sx={{ fontWeight: 'bold', mt: 3, mb: 1, fontFamily: 'Montserrat' }}>Operating Hours:</Typography>
+                                    <Typography variant="body1" sx={{ color: 'text.secondary', mb: 3 }}>Monday - Sunday: 10:00 AM - 8:00 PM</Typography>
+
+                                    <Typography variant="h6" component="h4" sx={{ fontWeight: 'bold', mb: 1.5, fontFamily: 'Montserrat' }}>Contact Details:</Typography>
+                                    <Box>
+                                        <MuiLink href="tel:+63781234567" /* ... styles ... */ >
+                                            <Phone sx={{ color: 'primary.main', mr: 1.5, fontSize: 20 }} /> (078) 123-4567 (Sample)
+                                        </MuiLink>
+                                        <MuiLink href="mailto:info@kahitsaanresto.com" /* ... styles ... */ >
+                                            <Mail sx={{ color: 'primary.main', mr: 1.5, fontSize: 20 }} /> info@kahitsaanresto.com (Sample)
+                                        </MuiLink>
+                                    </Box>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={6}> {/* ... map ... */} </Grid>
+                        </Grid>
+                    </Container>
+                </Box>
+
+                {/* Contact/Social Section */}
+                <Box id="contact" component="section" sx={{ py: { xs: 6, md: 10 }, backgroundColor: 'background.default' }}>
+                    <Container maxWidth="md" sx={{ textAlign: 'center' }}>
+                        <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold' }}>
                             Connect With Us
-                        </h2>
-                        <p className="social-description">
-                            Follow us on social media for the latest updates and promotions!
-                        </p>
-                        <div className="social-links">
-                            <a href="#" className="social-link">
-                                <span className="sr-only">Facebook</span>
-                                <Facebook size={32} />
-                            </a>
-                            <a href="#" className="social-link">
-                                <span className="sr-only">Instagram</span>
-                                <Instagram size={32} />
-                            </a>
-                            <a href="#" className="social-link">
-                                <span className="sr-only">Twitter</span>
-                                <Twitter size={32} />
-                            </a>
-                        </div>
-                    </div>
-                </section>
-            </main>
+                        </Typography>
+                        <Typography variant="body1" sx={{ color: 'text.secondary', mt: 2, mb:5, maxWidth: '700px', mx: 'auto' }}>
+                            Follow us on social media for the latest updates, promotions, and a peek into our delicious world!
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: {xs: 2.5, sm: 4} }}>
+                            {[Facebook, Instagram, Twitter].map((SocialIcon, index) => (
+                                <IconButton
+                                    key={index} component="a" href="#" target="_blank" rel="noopener noreferrer"
+                                    aria-label={`${SocialIcon.name || 'Social Media'} link`}
+                                    sx={{ 
+                                        color: 'text.secondary', p:1.5, border: `1px solid ${theme.palette.divider}`,
+                                        transition: 'color 0.3s, transform 0.3s, border-color 0.3s',
+                                        '&:hover': { color: 'primary.main', borderColor: 'primary.main', transform: 'scale(1.1)' } 
+                                    }}
+                                >
+                                    <SocialIcon size={28} strokeWidth={1.5} />
+                                </IconButton>
+                            ))}
+                        </Box>
+                    </Container>
+                </Box>
+            </Box>
 
             {/* Footer */}
-            <footer className="footer">
-                <div className="container">
-                    <p className="footer-copyright">&copy; {new Date().getFullYear()} Kahit Saan Restaurant. All Rights Reserved.</p>
-                    <p className="footer-location">Nueva Vizcaya, Philippines</p>
-                </div>
-            </footer>
-        </div>
+            <Box component="footer" sx={{ backgroundColor: theme.palette.brand.eerieBlack, color: theme.palette.brand.quickSilver, py: {xs:3, md:4} }}>
+                <Container maxWidth="lg" sx={{ textAlign: 'center' }}>
+                    <Typography variant="body2" sx={{fontFamily: 'Open Sans'}}>
+                        © {new Date().getFullYear()} Kahit Saan Restaurant. All Rights Reserved.
+                    </Typography>
+                    <Typography variant="caption" display="block" sx={{ mt: 0.5, fontFamily: 'Open Sans' }}>
+                        Bayombong, Nueva Vizcaya, Philippines
+                    </Typography>
+                </Container>
+            </Box>
+        </Box>
     );
 };
 
