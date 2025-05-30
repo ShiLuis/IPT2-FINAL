@@ -66,8 +66,8 @@ const LandingPage = () => {
             <CardMedia
                 component="img"
                 image={theme.palette.mode === 'dark'
-                    ? '/src/assets/Images/3x/LogoWhite.webp'
-                    : '/src/assets/Images/3x/LogoBlack.webp'}
+                    ? '/assets/Images/3x/LogoWhite.webp' // Updated path
+                    : '/assets/Images/3x/LogoBlack.webp'} // Updated path
                 alt="Kahit Saan Logo"
                 sx={{
                     height: { xs: 48, md: 56 }, // Increased logo size
