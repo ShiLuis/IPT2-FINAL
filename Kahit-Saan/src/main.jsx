@@ -14,8 +14,7 @@ import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import '@fontsource/open-sans/400.css';
 import '@fontsource/open-sans/600.css';
-// If using Kaushan Script for logo:
-// import '@fontsource/kaushan-script';
+import '@fontsource/kaushan-script'; // Ensure Kaushan Script is imported
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
