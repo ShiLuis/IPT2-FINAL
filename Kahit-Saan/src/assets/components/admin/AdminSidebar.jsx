@@ -74,12 +74,6 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
             </Toolbar>
             <Divider />
             <List sx={{ flexGrow: 1 }}>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/admin" selected={location.pathname === '/admin'}>
-                        <ListItemIcon><LayoutDashboard size={20} /></ListItemIcon>
-                        <ListItemText primary="Dashboard" />
-                    </ListItemButton>
-                </ListItem>
                 {menuItems.map((item, index) => (
                     <ListItem key={item.text} disablePadding>
                         <ListItemButton component={RouterLink} to={item.path} selected={location.pathname.startsWith(item.path)}>
@@ -91,20 +85,6 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
             </List>
             <Divider />
             <List>
-                <ListItem disablePadding>
-                    <ListItemButton onClick={handleThemeToggle}>
-                        <ListItemIcon>
-                            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
-                        </ListItemIcon>
-                        <ListItemText primary={isDarkMode ? 'Light Mode' : 'Dark Mode'} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem disablePadding>
-                    <ListItemButton component={RouterLink} to="/">
-                        <ListItemIcon><Home size={20} /></ListItemIcon>
-                        <ListItemText primary="Back to Site" />
-                    </ListItemButton>
-                </ListItem>
                 <ListItem disablePadding>
                     <ListItemButton onClick={handleLogout}>
                         <ListItemIcon><LogOut size={20} /></ListItemIcon>
