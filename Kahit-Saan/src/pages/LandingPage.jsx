@@ -207,9 +207,9 @@ const LandingPage = () => {
 
             <Box id="hero" component="section" sx={{
                 minHeight: '100vh', // Full viewport height
-                backgroundImage: "url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=80')",
+                backgroundImage: "url('/assets/Images/Hero_Image.jpg')", // Updated to use your local image
                 backgroundSize: 'cover', backgroundPosition: 'center', display: 'flex', alignItems: 'center',
-                justifyContent: 'center', position: 'relative', 
+                justifyContent: 'center', position: 'relative',
                 // Adjust padding top to account for AppBar height dynamically
                 pt: (currentTheme) => `${isMobile ? currentTheme.mixins.toolbar.minHeight + currentTheme.spacing(1) : (currentTheme.mixins.toolbar[currentTheme.breakpoints.up('md')]?.minHeight || 80) + currentTheme.spacing(2)}px`,
                 pb: theme.spacing(4) // Ensure some padding at the bottom too

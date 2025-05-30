@@ -274,7 +274,8 @@ const MenuManagement = () => {
                             <Paper elevation={2} sx={{ 
                                 display: 'flex', flexDirection: 'column', height: '100%', 
                                 backgroundColor: 'background.paper',
-                                borderRadius: '12px', overflow: 'hidden'
+                                borderRadius: '12px', overflow: 'hidden',
+                                width: '350px' // Added fixed width
                             }}>
                                 <MuiCardMedia
                                     component="img"
