@@ -29,7 +29,8 @@ const LandingPage = () => {
             setError(null);
             try {
                 // Ensure your server exposes GET /api/menu for public access
-                const response = await axios.get('http://localhost:5000/api/menu');
+                const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'; // Fallback for local dev
+                const response = await axios.get(`${baseUrl}/api/menu`);
                 setMenuItems(response.data);
             } catch (err) {
                 console.error("Error fetching public menu items:", err);
