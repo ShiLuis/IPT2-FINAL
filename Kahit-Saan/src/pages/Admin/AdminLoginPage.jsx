@@ -35,7 +35,8 @@ const AdminLoginPage = () => {
     setError(null);
     setLoading(true);
     try {
-      const response = await axios.post('http://localhost:5000/api/auth/login', { 
+      const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+      const response = await axios.post(`${apiBaseUrl}/api/auth/login`, { 
         username: formData.username, 
         password: formData.password 
       });
