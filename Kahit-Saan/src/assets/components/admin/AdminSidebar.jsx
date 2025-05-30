@@ -36,7 +36,7 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
 
     const handleLogout = () => {
         logoutAdmin();
-        navigate('/login');
+        navigate('/'); // Changed to redirect to the landing page
     };
 
     const menuItems = [
@@ -59,7 +59,7 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
                 >
                     <CardMedia
                         component="img"
-                        image={isDarkMode ? "/assets/Images/3x/LogoWhite.webp" : "/assets/Images/3x/LogoBlack.webp"} // Corrected path
+                        image={isDarkMode ? "/assets/Images/3x/LogoWhite.webp" : "/assets/Images/3x/LogoWhite.webp"} // Corrected path
                         alt="Kahit Saan Logo"
                         sx={{
                             height: 40, 
