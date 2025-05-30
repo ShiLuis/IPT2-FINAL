@@ -9,17 +9,18 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
-import Toolbar from '@mui/material/Toolbar'; // Import Toolbar
+import Toolbar from '@mui/material/Toolbar';
+import CardMedia from '@mui/material/CardMedia'; // Import CardMedia from MUI
 import axios from 'axios';
-import { useAuth } from '../../../context/AuthContext'; // Corrected path
+import { useAuth } from '../../../context/AuthContext';
 import { useTheme } from '@mui/material/styles';
 
-// Lucide Icons (as per your previous code)
+// Lucide Icons
 import { 
     ChefHat, 
     LayoutDashboard, 
     Users, 
-    UtensilsCrossed, // Use this for Menu Management
+    UtensilsCrossed,
     Settings, 
     LogOut,
     Home,
@@ -39,19 +40,68 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
     };
 
     const menuItems = [
-        // { text: 'Dashboard', icon: <Home size={20} />, path: '/admin' }, // Remove Dashboard
-        { text: 'Menu Management', icon: <UtensilsCrossed size={20} />, path: '/admin/menu' }, // Changed icon here
+        { text: 'Menu Management', icon: <UtensilsCrossed size={20} />, path: '/admin/menu' },
         { text: 'User Management', icon: <Users size={20} />, path: '/admin/users' },
-        // Add other admin links here if needed
     ];
 
     const drawer = (
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Toolbar sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', py: 2, borderBottom: `1px solid ${theme.palette.divider}` }}>
-                <Box component="img" src="/KahitSaan-Gold-Logo.png" alt="Kahit Saan Logo" sx={{ height: 40, mr: 1.5 }} />
-                <Typography variant="h6" noWrap component="div" sx={{ fontFamily: 'Kaushan Script', color: 'primary.main', fontSize: '1.8rem' }}>
-                    Kahit Saan
-                </Typography>
+                <Box
+                    sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        textDecoration: 'none',
+                        color: 'inherit', 
+                    }}
+                    component={RouterLink}
+                    to="/"
+                >
+                    <CardMedia
+                        component="img"
+                        image={'/src/assets/Images/3x/LogoWhite.webp'} // Always use white logo for dark sidebar
+                        alt="Kahit Saan Logo"
+                        sx={{
+                            height: { xs: 35, md: 46 },
+                            width: 'auto',
+                            mr: { xs: 1, md: 1.5 },
+                        }}
+                    />
+                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.2 }}>
+                        <Typography
+                            variant="caption"
+                            sx={{
+                                fontFamily: 'Open Sans, sans-serif',
+                                color: '#fff', // Stays white
+                                letterSpacing: '0.03em',
+                                fontWeight: 400,
+                                fontSize: { xs: '.5rem', md: '.6rem' },
+                                ml: 0.3,
+                                mb: '-2px',
+                                lineHeight: 1.1,
+                            }}
+                        >
+                            Saan tayo kakain?
+                        </Typography>
+                        <Typography
+                            variant="h6"
+                            component="div"
+                            sx={{
+                                fontFamily: 'montserrat',
+                                fontWeight: 900,
+                                fontSize: { xs: '.9rem', md: '1.2rem' },
+                                flexGrow: 0,
+                                color: '#fff', // Stays white
+                                letterSpacing: '0.04em',
+                                textShadow: '0 2px 8px rgba(0,0,0,0.18)',
+                                lineHeight: 1.1,
+                                mt: 0,
+                            }}
+                        >
+                            KAHIT SAAN
+                        </Typography>
+                    </Box>
+                </Box>
             </Toolbar>
             <List sx={{ flexGrow: 1, pt: 2 }}>
                 {menuItems.map((item) => (
@@ -94,7 +144,7 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
                 <ListItem disablePadding sx={{ display: 'block' }}>
                     <ListItemButton
                         component={RouterLink}
-                        to="/admin/login"
+                        to="/admin/auth/login"
                         onClick={handleLogout}
                         sx={{
                             minHeight: 48,
@@ -127,11 +177,11 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
                 [`& .MuiDrawer-paper`]: { 
                     width: drawerWidth, 
                     boxSizing: 'border-box',
-                    backgroundColor: 'brand.eerieBlack', // From theme
-                    borderRight: 'none', // Remove default border
+                    backgroundColor: 'brand.eerieBlack', 
+                    borderRight: 'none', 
                 },
             }}
-            open // Permanent drawer is always open
+            open 
         >
             {drawer}
         </Drawer>
