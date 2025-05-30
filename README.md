@@ -1,195 +1,144 @@
-# Kahit Saan - MERN Stack Application
+# Kahit Saan - User Manual
 
-## Description
+## Introduction
 
-Kahit Saan is a full-stack web application built using the MERN (MongoDB, Express.js, React, Node.js) stack. It features a customer-facing frontend for browsing a menu and an admin panel for managing menu items and users. The application is designed to be deployed on platforms like Render.com.
+Welcome to Kahit Saan! This manual will guide you through using the Kahit Saan application, covering both the customer-facing website and the admin panel.
 
-## Features
+**Deployed URLs:**
+*   **Main Website:** [https://kahit-saan-client.onrender.com](https://kahit-saan-client.onrender.com)
+*   **Admin Panel:** Access through a link on the main website (typically in the footer) or directly if you have the URL.
 
-### Frontend (Client-Side)
-*   Browse and view menu items.
-*   Responsive design for various screen sizes.
-*   (Add other public-facing features here)
 
-### Admin Panel
-*   Secure login for administrators.
-*   **Menu Management:** Create, Read, Update, and Delete (CRUD) menu items, including image uploads.
-*   **User Management:** CRUD operations for admin and staff users.
-*   (Add other admin features here)
 
-## Tech Stack
+## 1. Using the Kahit Saan Website (For Customers)
 
-### Frontend (Kahit-Saan directory)
-*   **React:** JavaScript library for building user interfaces.
-*   **Vite:** Next-generation frontend tooling for fast development.
-*   **Material-UI (MUI):** React UI framework for styled components.
-*   **Axios:** Promise-based HTTP client for making API requests.
-*   **React Router:** For client-side routing.
-*   **Lucide Icons:** Icon library.
-*   **Context API:** For state management (e.g., authentication).
+The main website allows you to browse the restaurant's menu and find information about Kahit Saan.
 
-### Backend (Server directory)
-*   **Node.js:** JavaScript runtime environment.
-*   **Express.js:** Web application framework for Node.js.
-*   **MongoDB:** NoSQL database for storing application data.
-*   **Mongoose:** ODM library for MongoDB and Node.js.
-*   **JSON Web Tokens (JWT):** For securing API endpoints and managing user authentication.
-*   **Bcrypt.js:** For hashing passwords.
-*   **CORS:** For enabling Cross-Origin Resource Sharing.
-*   **Multer & Cloudinary:** For handling file uploads (e.g., menu item images).
-*   **Dotenv:** For managing environment variables.
+### 1.1. Navigation
+The website has a simple navigation bar at the top with the following sections:
+*   **MENU:** Displays all available food and drink items.
+*   **ABOUT:** Provides information about the restaurant's story and concept.
+*   **LOCATION:** Shows the restaurant's physical address and a map.
+*   **CONTACT:** Lists ways to get in touch with the restaurant and links to social media.
 
-## Getting Started
+### 1.2. Viewing the Menu
+*   Click on the "MENU" link in the navigation bar or scroll down to the menu section.
+*   Each menu item displays:
+    *   An image of the dish.
+    *   The name of the dish.
+    *   A brief description.
+    *   The price.
 
-### Prerequisites
-*   Node.js (v18.x or later recommended)
-*   npm (usually comes with Node.js)
-*   MongoDB (local instance or a cloud-hosted solution like MongoDB Atlas)
-*   Git
+### 1.3. Finding Location and Contact Information
+*   Scroll to the "LOCATION" section to see the address and an embedded Google Map.
+*   The "CONTACT" section provides phone numbers, email addresses, and links to social media pages.
 
-### Installation
+## 2. Admin Panel Usage
 
-1.  **Clone the repository (if applicable, otherwise skip):**
-    ```bash
-    git clone <your-repository-url>
-    cd IPT2-FINAL
-    ```
+The Admin Panel is used by restaurant staff to manage menu items and administrator accounts.
 
-2.  **Setup Backend (Server):**
-    *   Navigate to the Server directory:
-        ```bash
-        cd Server
-        ```
-    *   Install dependencies:
-        ```bash
-        npm install
-        ```
-    *   Create a `.env` file in the `Server` directory and add the following environment variables (see "Environment Variables" section below for details):
-        ```env
-        MONGO_URI=your_mongodb_connection_string
-        JWT_SECRET=your_jwt_secret_key
-        PORT=5000
-        # Add Cloudinary variables if you've set it up
-        # CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
-        # CLOUDINARY_API_KEY=your_cloudinary_api_key
-        # CLOUDINARY_API_SECRET=your_cloudinary_api_secret
-        ```
+### 2.1. Accessing the Admin Panel
+1.  Navigate to the main Kahit Saan website: [https://kahit-saan-client.onrender.com](https://kahit-saan-client.onrender.com)
+2.  Scroll to the bottom of the page (footer).
+3.  Click on the "Admin Login" (or similar) link. This will take you to the Admin Login page.
 
-3.  **Setup Frontend (Kahit-Saan):**
-    *   Navigate to the frontend directory:
-        ```bash
-        cd ../Kahit-Saan 
-        # (or cd Kahit-Saan from the root)
-        ```
-    *   Install dependencies:
-        ```bash
-        npm install
-        ```
-    *   Create a `.env` file in the `Kahit-Saan` directory (root of the frontend project) and add the following environment variable:
-        ```env
-        VITE_API_BASE_URL=http://localhost:5000 
-        # For local development, this points to your local backend.
-        # For production, this will be your deployed backend URL.
-        ```
+### 2.2. Logging In
+*   On the Admin Login page, enter your credentials:
+    *   **Email:** Your registered admin email address.
+    *   **Password:** Your admin password.
+*   Click the "Login" button.
 
-### Running Locally
+**Test Account:**
+*   **Username/Email:** `admin1`
+*   **Password:** `password123`
 
-1.  **Start the Backend Server:**
-    *   In the `Server` directory:
-        ```bash
-        npm start
-        ```
-    *   The server should typically run on `http://localhost:5000`.
+    *(Note: For security, it is highly recommended to change this default password immediately after your first login if this is a live or shared environment.)*
 
-2.  **Start the Frontend Development Server:**
-    *   In the `Kahit-Saan` directory:
-        ```bash
-        npm run dev
-        ```
-    *   The frontend application will usually be accessible at `http://localhost:5173` (or another port specified by Vite).
+### 2.3. Admin Dashboard Overview
+After logging in, you will be directed to the admin dashboard, which typically includes a sidebar for navigation:
 
-## Environment Variables
+*   **Menu Management:** For managing food and drink items.
+*   **User Management:** For managing admin accounts.
+*   **Logout:** To securely log out of the admin panel.
 
-### Backend (`Server/.env`)
-*   `MONGO_URI`: **Required.** Your MongoDB connection string.
-    *   Example: `mongodb+srv://<username>:<password>@<cluster-url>/<database-name>?retryWrites=true&w=majority`
-*   `JWT_SECRET`: **Required.** A strong, unique secret key for signing JSON Web Tokens.
-*   `PORT`: Optional. The port the backend server will run on. Defaults to `5000`.
-*   `CLOUDINARY_CLOUD_NAME`: Optional (Required if using Cloudinary for image uploads). Your Cloudinary cloud name.
-*   `CLOUDINARY_API_KEY`: Optional (Required if using Cloudinary). Your Cloudinary API key.
-*   `CLOUDINARY_API_SECRET`: Optional (Required if using Cloudinary). Your Cloudinary API secret.
+### 2.4. Menu Management
 
-### Frontend (`Kahit-Saan/.env`)
-*   `VITE_API_BASE_URL`: **Required.** The base URL for your backend API.
-    *   For local development: `http://localhost:5000`
-    *   For production: `https://your-deployed-backend-url.onrender.com`
+This section allows you to add, view, edit, and delete menu items.
 
-## Deployment
+#### 2.4.1. Viewing Menu Items
+*   Navigate to "Menu Management" from the sidebar.
+*   You will see a list or grid of all current menu items, displaying their name, description, price, and image.
 
-This application is configured for deployment on Render.com (or similar platforms).
+#### 2.4.2. Adding a New Menu Item
+1.  In the "Menu Management" section, look for an "Add New Item" or "+" button.
+2.  A form or modal will appear. Fill in the following details:
+    *   **Name:** The name of the menu item (e.g., "Laksa Noodles").
+    *   **Description:** A short description of the item.
+    *   **Price:** The price of the item (e.g., 170.00).
+    *   **Category:** (If applicable) Select a category for the item (e.g., "Main Course", "Drinks").
+    *   **Photo:** Upload an image for the menu item. Click the "Choose File" or "Upload Image" button and select an image from your computer.
+3.  Click "Save" or "Add Item".
 
-### Backend (Node.js Web Service on Render)
-*   **Build Command:** `npm install` (or `yarn install`)
-*   **Start Command:** `npm start` (or `yarn start`)
-*   **Environment Variables:** Set `MONGO_URI`, `JWT_SECRET`, and Cloudinary variables (if used) in the Render dashboard.
+#### 2.4.3. Editing an Existing Menu Item
+1.  In the "Menu Management" section, find the item you wish to edit.
+2.  Click the "Edit" button (often an icon like a pencil) associated with that item.
+3.  A form or modal will appear pre-filled with the item's current details.
+4.  Modify the details as needed (name, description, price, category, photo).
+5.  Click "Save" or "Update Item".
 
-### Frontend (Static Site on Render)
-*   **Build Command:** `npm run build` (or `yarn build`)
-*   **Publish Directory:** `dist`
-*   **Environment Variables:** Set `VITE_API_BASE_URL` to your deployed backend service URL in the Render dashboard.
+#### 2.4.4. Deleting a Menu Item
+1.  In the "Menu Management" section, find the item you wish to delete.
+2.  Click the "Delete" button (often an icon like a trash can) associated with that item.
+3.  A confirmation prompt will appear. Confirm that you want to delete the item.
+    *   **Caution:** Deleting an item is usually permanent.
 
-**Deployed URLs (Example):**
-*   Frontend: `https://kahit-saan-client.onrender.com`
-*   Backend: `https://kahit-saan-server.onrender.com`
+### 2.5. User Management (Admin Accounts)
 
-## API Endpoints Overview
+This section allows you to add, view, edit, and delete administrator accounts.
 
-The backend exposes RESTful APIs for various functionalities.
+#### 2.5.1. Viewing Users
+*   Navigate to "User Management" from the sidebar.
+*   You will see a list of all registered admin users, typically showing their username/email and role.
 
-### Authentication (`/api/auth`)
-*   `POST /register`: Register a new admin/staff user.
-*   `POST /login`: Log in an existing admin/staff user.
+#### 2.5.2. Adding a New User
+1.  In the "User Management" section, look for an "Add New User" or "+" button.
+2.  A form or modal will appear. Fill in the following details:
+    *   **Username/Email:** The email address for the new admin user.
+    *   **Password:** A strong password for the new user.
+    *   **Role:** (If applicable) Assign a role (e.g., "Admin", "Staff").
+3.  Click "Save" or "Add User".
 
-### Menu Items (`/api/menu`)
-*   `GET /`: Get all menu items.
-*   `POST /`: Add a new menu item (requires admin token, multipart/form-data).
-*   `PUT /:id`: Update an existing menu item (requires admin token, multipart/form-data).
-*   `DELETE /:id`: Delete a menu item (requires admin token).
+#### 2.5.3. Editing an Existing User
+1.  In the "User Management" section, find the user you wish to edit.
+2.  Click the "Edit" button associated with that user.
+3.  A form or modal will appear. You can typically update the username/email and role. For security reasons, changing passwords might require a separate "Change Password" function or re-entering the old password.
+4.  Modify the details as needed.
+5.  Click "Save" or "Update User".
 
-### Users (`/api/users`)
-*   `GET /`: Get all users (requires admin token).
-*   `POST /`: Create a new user (requires admin token).
-*   `PUT /:id`: Update a user (requires admin token).
-*   `DELETE /:id`: Delete a user (requires admin token).
+#### 2.5.4. Deleting a User
+1.  In the "User Management" section, find the user you wish to delete.
+2.  Click the "Delete" button associated with that user.
+3.  A confirmation prompt will appear. Confirm that you want to delete the user.
+    *   **Caution:** Ensure you are not deleting the last admin account, as this could lock you out of the system.
 
-## Folder Structure
+### 2.6. Logging Out
+*   Click the "Logout" button in the admin sidebar.
+*   You will be redirected to the Admin Login page or the main website.
 
-```
-IPT2-FINAL/
-├── Kahit-Saan/        # Frontend React/Vite application
-│   ├── public/        # Static assets
-│   ├── src/           # Source files (components, pages, context, etc.)
-│   ├── .env           # Frontend environment variables (local)
-│   ├── package.json
-│   └── vite.config.js
-│
-├── Server/            # Backend Node.js/Express application
-│   ├── config/        # Database, Cloudinary config
-│   ├── controllers/   # Request handlers, business logic
-│   ├── middleware/    # Custom middleware (auth, file uploads)
-│   ├── models/        # Mongoose schemas
-│   ├── routes/        # API route definitions
-│   ├── .env           # Backend environment variables (local)
-│   └── index.js       # Main server entry point
-│   └── package.json
-│
-└── README.md          # This file
-```
+## 3. Troubleshooting & Support
 
-## Contributing
+*   **Login Issues:**
+    *   Ensure you are using the correct email and password.
+    *   Check if your Caps Lock key is on/off.
+    *   If you forgot your password, there might be a "Forgot Password" link (if implemented) or you may need to contact a super-administrator.
+*   **Image Upload Failures:**
+    *   Ensure the image file is in a supported format (e.g., JPG, PNG, WEBP).
+    *   Check the file size; there might be a limit.
+*   **Changes Not Appearing:**
+    *   Try clearing your browser cache or doing a hard refresh (Ctrl+Shift+R or Cmd+Shift+R).
+    *   Ensure your internet connection is stable.
 
-(Details on how to contribute if this were an open-source project)
+If you encounter persistent issues, please refer to the technical documentation or contact the application developer.
 
 ---
-
-*This README was generated on May 30, 2025.*
+*This User Manual was last updated on May 30, 2025.*

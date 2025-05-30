@@ -284,7 +284,14 @@ const LandingPage = () => {
                             <Grid container spacing={5} justifyContent="center">
                                 {menuItems.map((item) => (
                                     <Grid item xs={12} sm={6} md={4} lg={3} key={item._id || item.name}
-                                        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', mb: 2 }}>
+                                        sx={{ 
+                                            display: 'flex', 
+                                            flexDirection: 'column', 
+                                            alignItems: 'center', 
+                                            textAlign: 'center', 
+                                            mb: 2,
+                                            width: '280px' // Added fixed width
+                                        }}>
                                         <Box sx={{
                                             width: '166px', height: '166px', borderRadius: '50%',
                                             border: `5px solid ${theme.palette.primary.main}`,
@@ -343,43 +350,42 @@ const LandingPage = () => {
                             </Typography>
                         </Box> 
                         <Container maxWidth="md">
-    <Typography
-        variant="body1"
-        sx={{
-            fontWeight: 'bold',
-            textAlign: 'center',
-            mb: 3,
-            fontSize: { xs: '1rem', md: '1.3rem' },
-            lineHeight: 1.8,
-            // color: is inherited from the theme by default for Typography
-        }}
-    >
-        “Saan tayo kakain?”<br />
-        “Kahit saan.”
-    </Typography>
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    fontWeight: 'bold',
+                                    textAlign: 'center',
+                                    mb: 3,
+                                    fontSize: { xs: '1rem', md: '1.3rem' },
+                                    lineHeight: 1.8,
+                                }}
+                            >
+                                “Saan tayo kakain?”<br />
+                                “Kahit saan.”
+                            </Typography>
 
-    <Typography
-        variant="body1"
-        sx={{
-            textAlign: 'center',
-            fontSize: { xs: '0.95rem', md: '1.05rem' },
-            lineHeight: 1.8,
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    textAlign: 'center',
+                                    fontSize: { xs: '0.95rem', md: '1.05rem' },
+                                    lineHeight: 1.8,
 
-        }}
-    >
-        We’ve all heard it—and that’s exactly why this place exists.<br /><br />
-        Kahit Saan was born from the classic barkada struggle:<br />
-        no one can decide where to eat,<br />
-        so you go somewhere that has everything you’re craving—good food, good prices, good vibes.<br /><br />
-        Located near SMU Gate 2,<br />
-        we serve budget-friendly comfort food like chao fan combos, ramen, and laksa<br />
-        that hit the spot after class, during tambay hours, or in the middle of thesis breakdowns.<br /><br />
-        Whether you’re hungry-hungry or just here for the company,<br />
-        Kahit Saan is your default, go-to, “Kahit saan” resto.<br />
-        Because when no one can decide where to eat,<br />
-        we’ll always be the answer.
-    </Typography>
-</Container>
+                                }}
+                            >
+                                We’ve all heard it—and that’s exactly why this place exists.<br /><br />
+                                Kahit Saan was born from the classic barkada struggle:<br />
+                                no one can decide where to eat,<br />
+                                so you go somewhere that has everything you’re craving—good food, good prices, good vibes.<br /><br />
+                                Located near SMU Gate 2,<br />
+                                we serve budget-friendly comfort food like chao fan combos, ramen, and laksa<br />
+                                that hit the spot after class, during tambay hours, or in the middle of thesis breakdowns.<br /><br />
+                                Whether you’re hungry-hungry or just here for the company,<br />
+                                Kahit Saan is your default, go-to, “Kahit saan” resto.<br />
+                                Because when no one can decide where to eat,<br />
+                                we’ll always be the answer.
+                            </Typography>
+                        </Container>
                     </Container>
                 </Box>
 
@@ -394,12 +400,11 @@ const LandingPage = () => {
                                 We're conveniently located. Come visit or give us a call!
                             </Typography>
                         </Box>
-                        {/* Replace Grid container and items with a Box using flexbox and sx props */}
                         <Box sx={{
                             display: 'flex',
-                            flexDirection: { xs: 'column', md: 'row' }, // Stack on xs, row on md+
-                            gap: theme.spacing(5), // Equivalent to Grid spacing={5}
-                            alignItems: { xs: 'initial', md: 'stretch' } // Stretch items to equal height on md+
+                            flexDirection: { xs: 'column', md: 'row' },
+                            gap: theme.spacing(5), 
+                            alignItems: { xs: 'initial', md: 'stretch' }
                         }}>
                             {/* Contact Details Paper */}
                             <Paper elevation={0} sx={{
@@ -407,28 +412,26 @@ const LandingPage = () => {
                                 borderRadius: '12px',
                                 backgroundColor: alpha(theme.palette.primary.main, 0.03),
                                 border: `1px solid ${alpha(theme.palette.primary.main, 0.2)}`,
-                                height: '100%', // Ensures it can stretch if alignItems: 'stretch' is used
+                                height: '100%',
                                 display: 'flex',
                                 flexDirection: 'column',
-                                width: { xs: '100%', md: `calc(5.5/12 * 100% - (${theme.spacing(5)} / 2))` }, // Adjust width for gap
-                                // Or using flexBasis which might be cleaner with gap:
-                                // flexBasis: { xs: '100%', md: 'calc(5.5/12 * 100%)' },
+                                width: { xs: '100%', md: `calc(5.5/12 * 100% - (${theme.spacing(5)} / 2))` }, 
                             }}>
                                 <Typography variant="h5" component="h3" sx={{ fontWeight: 'bold', mb: 2.5, fontFamily: 'Montserrat', color: theme.palette.primary.main }}>Kahit Saan Restaurant</Typography>
                                 <Typography variant="body1" component="address" sx={{ fontStyle: 'normal', color: theme.palette.text.secondary, mb: 2, lineHeight: 1.7 }}>
-                                    Purok 5, Barangay Don Mariano Perez,<br />
-                                    Bayombong, 3700 Nueva Vizcaya, Philippines
+                                    Jaena Street (Near SMU gate 2),<br />
+                                     Bayombong, Philippines
                                 </Typography>
                                 <Typography variant="h6" component="h4" sx={{ fontWeight: 'bold', mt: 2, mb: 1, fontFamily: 'Montserrat', color: theme.palette.primary.main }}>Operating Hours:</Typography>
                                 <Typography variant="body1" sx={{ color: theme.palette.text.secondary, mb: 2 }}>Monday - Sunday: 10:00 AM - 8:00 PM</Typography>
                                 <Typography variant="h6" component="h4" sx={{ fontWeight: 'bold', mt: 2, mb: 1.5, fontFamily: 'Montserrat', color: theme.palette.primary.main }}>Contact Details:</Typography>
                                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                                    <MuiLink href="tel:+639123456789" sx={{
+                                    <MuiLink href="tel:+639554302862" sx={{
                                         display: 'flex', alignItems: 'center', textDecoration: 'none',
                                         color: theme.palette.text.secondary,
                                         '&:hover': { color: theme.palette.primary.main }
                                     }}>
-                                        <Phone sx={{ color: theme.palette.primary.main, mr: 1.5, fontSize: 20 }} /> +63 912 345 6789 (Mobile)
+                                        <Phone sx={{ color: theme.palette.primary.main, mr: 1.5, fontSize: 20 }} /> +63 955 430 2862 (Mobile)
                                     </MuiLink>
                                     <MuiLink href="mailto:info@kahitsaanresto.com" sx={{
                                         display: 'flex', alignItems: 'center', textDecoration: 'none',
@@ -471,19 +474,17 @@ const LandingPage = () => {
                     </Container>
                 </Box>
 
-                <Box id="contact" component="section" sx={{ py: { xs: 6, md: 10 } /* bg color from parent */}}>
+                <Box id="contact" component="section" sx={{ py: { xs: 6, md: 10 }}}>
                     <Container maxWidth="md" sx={{ textAlign: 'center' }}>
-                        <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold', mb: 2 /* color from theme */ }}>
+                        <Typography variant="h2" component="h2" sx={{ fontWeight: 'bold', mb: 2 }}>
                             Connect With Us
                         </Typography>
                         <Typography variant="body1" sx={{ color: theme.palette.text.secondary, mt:1, mb: {xs: 4, md: 5}, maxWidth: '700px', mx: 'auto' }}>
-                            Follow us on social media for the latest updates, promotions, and a peek into our delicious world! We'd love to hear from you.
+                            Follow us on Facebook for the latest updates, promotions, and a peek into our delicious world! We'd love to hear from you.
                         </Typography>
                         <Box sx={{ display: 'flex', justifyContent: 'center', gap: {xs: 2, sm: 3} }}>
                             {[
-                                { Icon: Facebook, label: 'Facebook', url: 'https://facebook.com/kahitsaanresto' },
-                                { Icon: Instagram, label: 'Instagram', url: 'https://instagram.com/kahitsaanresto' },
-                                { Icon: Twitter, label: 'Twitter', url: 'https://twitter.com/kahitsaanresto' }
+                                { Icon: Facebook, label: 'Facebook', url: 'https://www.facebook.com/profile.php?id=100090792161432' },
                             ].map(({ Icon, label, url }) => (
                                 <IconButton
                                     key={label} component="a" href={url} target="_blank" rel="noopener noreferrer"
