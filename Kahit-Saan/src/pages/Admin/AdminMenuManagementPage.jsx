@@ -14,6 +14,72 @@ import {
 // Import the centralized adminApi and its setAuthToken function
 import { adminApi, setAuthToken as setApiAuthToken } from '../../api/adminApi';
 
+// Define FormFields as a standalone component
+const StandaloneFormFields = ({ formData, handleInputChange, theme, photoPreview }) => (
+    <Grid container spacing={2}>
+        <Grid item xs={12}>
+            <TextField fullWidth required label="Name" name="name" value={formData.name} onChange={handleInputChange} variant="outlined" />
+        </Grid>
+        <Grid item xs={12}>
+            <TextField fullWidth required multiline rows={3} label="Description" name="description" value={formData.description} onChange={handleInputChange} variant="outlined" />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <TextField fullWidth required type="number" label="Price (₱)" name="price" value={formData.price} onChange={handleInputChange} variant="outlined" inputProps={{ min: 0, step: "0.01" }} />
+        </Grid>
+        <Grid item xs={12} sm={6}>
+            <FormControl fullWidth required variant="outlined">
+                <InputLabel id="category-label">Category</InputLabel>
+                <Select
+                    labelId="category-label"
+                    label="Category"
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    sx={{ minWidth: 180 }} // Ensure minimum width
+                >
+                    <MenuItem value="" disabled><em>Select a category</em></MenuItem>
+                    <MenuItem value="Chaofan">Chaofan</MenuItem>
+                    <MenuItem value="Noodles">Noodles</MenuItem>
+                    <MenuItem value="Rice Meals">Rice Meals</MenuItem>
+                    <MenuItem value="Beverages">Beverages</MenuItem>
+                    <MenuItem value="Sides">Sides</MenuItem>
+                </Select>
+            </FormControl>
+        </Grid>
+        <Grid item xs={12}>
+            <Button variant="outlined" component="label" fullWidth startIcon={<ImageIcon />}
+                sx={{
+                    borderColor: 'primary.main', color: 'primary.main',
+                    textTransform: 'none', // For a more natural "Upload Image" text
+                    '&:hover': { borderColor: 'primary.dark', backgroundColor: alpha(theme.palette.primary.main, 0.08) }
+                }}
+            >
+                {photoPreview ? 'Change Image' : 'Upload Image'}
+                <input type="file" id="menu-item-photo-upload" name="photo" hidden accept="image/*" onChange={handleInputChange} />
+            </Button>
+            {photoPreview && (
+                <Box mt={2} textAlign="center">
+                    <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }} gutterBottom>Image Preview:</Typography>
+                    <MuiCardMedia // Using MuiCardMedia for consistent image display
+                        component="img"
+                        src={photoPreview}
+                        alt="Preview"
+                        sx={{
+                            maxHeight: '150px',
+                            maxWidth: '100%',
+                            width: 'auto', // Maintain aspect ratio
+                            borderRadius: '4px',
+                            border: `1px solid ${theme.palette.divider}`,
+                            objectFit: 'contain', // Ensure whole image is visible
+                            margin: '0 auto' // Center the image if it's not full width
+                        }}
+                    />
+                </Box>
+            )}
+        </Grid>
+    </Grid>
+);
+
 
 const MenuManagement = () => {
     const [menuItems, setMenuItems] = useState([]);
@@ -177,72 +243,6 @@ const MenuManagement = () => {
         }
     };
 
-    // FormFields is defined inside the component to access formData, handleInputChange, theme, photoPreview
-    const FormFields = () => (
-        <Grid container spacing={2}>
-            <Grid item xs={12}>
-                <TextField fullWidth required label="Name" name="name" value={formData.name} onChange={handleInputChange} variant="outlined" />
-            </Grid>
-            <Grid item xs={12}>
-                <TextField fullWidth required multiline rows={3} label="Description" name="description" value={formData.description} onChange={handleInputChange} variant="outlined" />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-                <TextField fullWidth required type="number" label="Price (₱)" name="price" value={formData.price} onChange={handleInputChange} variant="outlined" inputProps={{ min: 0, step: "0.01" }} />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-                <FormControl fullWidth required variant="outlined">
-                    <InputLabel id="category-label">Category</InputLabel>
-                    <Select 
-                        labelId="category-label" 
-                        label="Category" 
-                        name="category" 
-                        value={formData.category} 
-                        onChange={handleInputChange}
-                        sx={{ minWidth: 180 }} // Ensure minimum width
-                    >
-                        <MenuItem value="" disabled><em>Select a category</em></MenuItem>
-                        <MenuItem value="Chaofan">Chaofan</MenuItem>
-                        <MenuItem value="Noodles">Noodles</MenuItem>
-                        <MenuItem value="Rice Meals">Rice Meals</MenuItem>
-                        <MenuItem value="Beverages">Beverages</MenuItem>
-                        <MenuItem value="Sides">Sides</MenuItem>
-                    </Select>
-                </FormControl>
-            </Grid>
-            <Grid item xs={12}>
-                <Button variant="outlined" component="label" fullWidth startIcon={<ImageIcon />}
-                    sx={{
-                        borderColor: 'primary.main', color: 'primary.main',
-                        textTransform: 'none', // For a more natural "Upload Image" text
-                        '&:hover': { borderColor: 'primary.dark', backgroundColor: alpha(theme.palette.primary.main, 0.08) }
-                    }}
-                >
-                    {photoPreview ? 'Change Image' : 'Upload Image'}
-                    <input type="file" id="menu-item-photo-upload" name="photo" hidden accept="image/*" onChange={handleInputChange} />
-                </Button>
-                {photoPreview && (
-                    <Box mt={2} textAlign="center">
-                        <Typography variant="caption" display="block" sx={{ color: 'text.secondary' }} gutterBottom>Image Preview:</Typography>
-                        <MuiCardMedia // Using MuiCardMedia for consistent image display
-                            component="img"
-                            src={photoPreview}
-                            alt="Preview"
-                            sx={{
-                                maxHeight: '150px',
-                                maxWidth: '100%',
-                                width: 'auto', // Maintain aspect ratio
-                                borderRadius: '4px',
-                                border: `1px solid ${theme.palette.divider}`,
-                                objectFit: 'contain', // Ensure whole image is visible
-                                margin: '0 auto' // Center the image if it's not full width
-                            }}
-                        />
-                    </Box>
-                )}
-            </Grid>
-        </Grid>
-    );
-
     return (
         <Box sx={{p: {xs: 2, sm: 3}}}> {/* Added some padding to the main Box */}
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
@@ -333,7 +333,14 @@ const MenuManagement = () => {
                 </DialogTitle>
                 <DialogContent sx={{ pt: theme.spacing(3) }}> {/* Adjusted padding top */}
                     {formError && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setFormError(null)}>{formError}</Alert>}
-                    <FormFields /> {/* Call as a component */}
+                    <form id="menu-item-form" onSubmit={handleSubmitForm}>
+                        <StandaloneFormFields 
+                            formData={formData} 
+                            handleInputChange={handleInputChange} 
+                            theme={theme} 
+                            photoPreview={photoPreview} 
+                        />
+                    </form>
                 </DialogContent>
                 <DialogActions sx={{p: theme.spacing(2, 3), borderTop: `1px solid ${theme.palette.divider}`}}>
                     <Button onClick={handleCloseModals} color="inherit" variant="outlined" sx={{fontFamily: 'Open Sans', fontWeight:600}}>Cancel</Button>

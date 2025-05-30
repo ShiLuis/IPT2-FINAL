@@ -13,11 +13,33 @@ import { alpha } from '@mui/material/styles'; // Import alpha
 // Use the centralized API functions
 import { getUsers, createUser, updateUser, deleteUser, setAuthToken as setApiAuthToken } from '../../api/adminApi';
 
+// Define StandaloneUserFormFields as a standalone component
+const StandaloneUserFormFields = ({ formData, handleInputChange, editingUser }) => (
+    <Grid container spacing={2}>
+        <Grid item xs={12}>
+            <TextField fullWidth required label="Username" name="username" value={formData.username} onChange={handleInputChange} variant="outlined" />
+        </Grid>
+        <Grid item xs={12}>
+            <TextField fullWidth type="password" label={editingUser ? "New Password (optional)" : "Password"} name="password" value={formData.password} onChange={handleInputChange} variant="outlined" helperText={editingUser ? "Leave blank to keep current password" : ""} required={!editingUser} />
+        </Grid>
+        <Grid item xs={12}>
+            <FormControl fullWidth required variant="outlined">
+                <InputLabel id="role-label">Role</InputLabel>
+                <Select labelId="role-label" label="Role" name="role" value={formData.role} onChange={handleInputChange}>
+                    <MenuItem value="staff">Staff</MenuItem>
+                    <MenuItem value="admin">Admin</MenuItem>
+                </Select>
+            </FormControl>
+        </Grid>
+    </Grid>
+);
+
 const AdminUserManagementPage = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [formLoading, setFormLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [pageError, setPageError] = useState(null); // Renamed from error to pageError for clarity
+  const [formError, setFormError] = useState(null); // New state for form-specific errors
   const [isFormModalOpen, setIsFormModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null); // null for Add, user object for Edit
@@ -30,28 +52,28 @@ const AdminUserManagementPage = () => {
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
     if (token) {
-      setApiAuthToken(token); // Set token for the shared adminApi instance
+      setApiAuthToken(token);
     }
-    // else: Handled by PrivateRoute
-  }, []);
+    fetchUsers(); // Moved fetchUsers here to be called once on mount after token setup
+  }, []); // Removed fetchUsers from dependency array to prevent re-fetching on its own change
 
   const fetchUsers = useCallback(async () => {
     setLoading(true);
-    setError(null);
+    setPageError(null); // Use pageError here
     try {
       const data = await getUsers();
       setUsers(data);
     } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Failed to fetch users.');
+      setPageError(err.response?.data?.message || err.message || 'Failed to fetch users.'); // Use pageError here
       console.error("Error fetching users:", err);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []); // Empty dependency array if setApiAuthToken is stable and getUsers doesn't depend on component state
 
-  useEffect(() => {
-    fetchUsers();
-  }, [fetchUsers]);
+  // useEffect(() => { // Original useEffect for fetchUsers, can be removed if fetchUsers is called in the first useEffect
+  //   fetchUsers();
+  // }, [fetchUsers]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -60,11 +82,13 @@ const AdminUserManagementPage = () => {
 
   const resetForm = () => {
     setFormData({ username: '', password: '', role: 'staff' });
+    setFormError(null); // Clear form error on reset
   };
 
   const handleOpenAddModal = () => {
     setEditingUser(null);
     resetForm();
+    setFormError(null); // Clear form error
     setIsFormModalOpen(true);
   };
 
@@ -75,6 +99,7 @@ const AdminUserManagementPage = () => {
       password: '', // Password field is for new password only
       role: user.role,
     });
+    setFormError(null); // Clear form error
     setIsFormModalOpen(true);
   };
 
@@ -88,23 +113,24 @@ const AdminUserManagementPage = () => {
     setIsDeleteModalOpen(false);
     setEditingUser(null);
     resetForm();
+    setFormError(null); // Clear form error
   };
 
   const handleSubmitForm = async (e) => {
     e.preventDefault();
     setFormLoading(true);
-    setError(null);
+    setFormError(null); // Clear form error before submission
+    setPageError(null); // Clear page error as well
 
     const dataToSubmit = { ...formData };
-    if (editingUser && !formData.password) { // If editing and password is empty, don't send it
+    if (editingUser && !formData.password) {
         delete dataToSubmit.password;
     }
-    if (!editingUser && !formData.password) { // If adding and password is empty
-        setError("Password is required for new users.");
+    if (!editingUser && !formData.password) {
+        setFormError("Password is required for new users."); // Use formError
         setFormLoading(false);
         return;
     }
-
 
     try {
       if (editingUser) {
@@ -116,7 +142,7 @@ const AdminUserManagementPage = () => {
       handleCloseModals();
     } catch (err) {
       console.error("Error saving user:", err.response || err);
-      setError(err.response?.data?.message || "Failed to save user.");
+      setFormError(err.response?.data?.message || "Failed to save user."); // Use formError
     } finally {
       setFormLoading(false);
     }
@@ -125,43 +151,22 @@ const AdminUserManagementPage = () => {
   const handleDeleteConfirm = async () => {
     if (!editingUser) return;
     setFormLoading(true);
-    setError(null);
+    setPageError(null); // Use pageError for delete confirmation errors
     try {
       await deleteUser(editingUser._id);
       fetchUsers();
       handleCloseModals();
     } catch (err) {
       console.error("Error deleting user:", err);
-      setError(err.response?.data?.message || "Failed to delete user.");
+      setPageError(err.response?.data?.message || "Failed to delete user."); // Use pageError
+      handleCloseModals(); // Close modal even if delete fails, error shown on page
     } finally {
       setFormLoading(false);
     }
   };
 
-  const UserFormFields = (
-    <Box component="form" onSubmit={handleSubmitForm} noValidate>
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <TextField fullWidth required label="Username" name="username" value={formData.username} onChange={handleInputChange} variant="outlined" />
-        </Grid>
-        <Grid item xs={12}>
-          <TextField fullWidth type="password" label={editingUser ? "New Password (optional)" : "Password"} name="password" value={formData.password} onChange={handleInputChange} variant="outlined" helperText={editingUser ? "Leave blank to keep current password" : ""} required={!editingUser} />
-        </Grid>
-        <Grid item xs={12}>
-          <FormControl fullWidth required variant="outlined">
-            <InputLabel id="role-label">Role</InputLabel>
-            <Select labelId="role-label" label="Role" name="role" value={formData.role} onChange={handleInputChange}>
-              <MenuItem value="staff">Staff</MenuItem>
-              <MenuItem value="admin">Admin</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
-      </Grid>
-    </Box>
-  );
-
   return (
-    <Box>
+    <Box sx={{p: {xs: 2, sm: 3}}}> {/* Added padding to the main Box */}
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
         <Typography variant="h4" component="h1" sx={{ fontFamily: 'Montserrat', fontWeight: 'bold', color: 'text.primary' }}>
           User Management
@@ -177,11 +182,11 @@ const AdminUserManagementPage = () => {
         </Button>
       </Box>
 
-      {error && <Alert severity="error" onClose={() => setError(null)} sx={{ mb: 2 }}>{error}</Alert>}
+      {pageError && <Alert severity="error" onClose={() => setPageError(null)} sx={{ mb: 2 }}>{pageError}</Alert>}
       
       {loading && <Box sx={{ display: 'flex', justifyContent: 'center', my: 5 }}><CircularProgress color="primary" /></Box>}
 
-      {!loading && users.length === 0 && !error && (
+      {!loading && users.length === 0 && !pageError && (
         <Paper sx={{ textAlign: 'center', py: 6, backgroundColor: 'background.paper' }}>
             <People sx={{ fontSize: 60, color: theme.palette.text.secondary, marginBottom: theme.spacing(2) }} />
             <Typography variant="h6" sx={{ color: 'text.secondary' }}>No Users Found</Typography>
@@ -232,17 +237,24 @@ const AdminUserManagementPage = () => {
       )}
 
       {/* Add/Edit User Modal */}
-      <Dialog open={isFormModalOpen} onClose={handleCloseModals} PaperProps={{sx: {borderRadius: '12px', backgroundColor: 'background.paper'}}}>
+      <Dialog open={isFormModalOpen} onClose={handleCloseModals} PaperProps={{sx: {borderRadius: '12px', backgroundColor: 'background.paper'}}} maxWidth="sm" fullWidth>
         <DialogTitle sx={{fontFamily: 'Montserrat', fontWeight: 'bold', color: 'text.primary', borderBottom: `1px solid ${theme.palette.divider}`}}>
           {editingUser ? 'Edit User' : 'Add New User'}
           <IconButton aria-label="close" onClick={handleCloseModals} sx={{position: 'absolute', right: 8, top: 8, color: (theme) => theme.palette.grey[500]}}> <X /> </IconButton>
         </DialogTitle>
         <DialogContent sx={{pt: '20px !important'}}>
-            {UserFormFields}
+            {formError && <Alert severity="error" sx={{ mb: 2 }} onClose={() => setFormError(null)}>{formError}</Alert>} {/* Display formError here */}
+            <form id="user-form" onSubmit={handleSubmitForm}>
+                <StandaloneUserFormFields 
+                    formData={formData} 
+                    handleInputChange={handleInputChange} 
+                    editingUser={editingUser} 
+                />
+            </form>
         </DialogContent>
         <DialogActions sx={{p: '16px 24px', borderTop: `1px solid ${theme.palette.divider}`}}>
             <Button onClick={handleCloseModals} color="inherit" variant="outlined" sx={{fontFamily: 'Open Sans', fontWeight:600}}>Cancel</Button>
-            <Button onClick={handleSubmitForm} variant="contained" color="primary" disabled={formLoading} startIcon={formLoading ? <CircularProgress size={16} color="inherit"/> : <Save size={18}/>} sx={{fontFamily: 'Open Sans', fontWeight:600}}>
+            <Button type="submit" form="user-form" variant="contained" color="primary" disabled={formLoading} startIcon={formLoading ? <CircularProgress size={16} color="inherit"/> : <Save size={18}/>} sx={{fontFamily: 'Open Sans', fontWeight:600}}>
                 {formLoading ? 'Saving...' : 'Save User'}
             </Button>
         </DialogActions>
