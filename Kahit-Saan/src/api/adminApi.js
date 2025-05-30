@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000/api'; // Your backend URL
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000'; // Your backend URL
 
 // Axios instance for admin APIs
 const adminApi = axios.create({
-  baseURL: API_URL,
+  baseURL: `${API_URL}/api`, // Adjusted to append /api to the base URL
 });
 
 // Ensure axios sends the token with requests

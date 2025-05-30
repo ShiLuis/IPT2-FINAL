@@ -59,109 +59,56 @@ const AdminSidebar = ({ drawerWidth, mobileOpen, handleDrawerToggle, handleTheme
                 >
                     <CardMedia
                         component="img"
-                        image={'/src/assets/Images/3x/LogoWhite.webp'} // Always use white logo for dark sidebar
+                        image={isDarkMode ? "/assets/Images/3x/LogoWhite.webp" : "/assets/Images/3x/LogoBlack.webp"} // Corrected path
                         alt="Kahit Saan Logo"
                         sx={{
-                            height: { xs: 35, md: 46 },
-                            width: 'auto',
-                            mr: { xs: 1, md: 1.5 },
-                        }}
+                            height: 40, 
+                            width: 'auto', 
+                            mr: 1 
+                        }} 
                     />
-                    <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 0.2 }}>
-                        <Typography
-                            variant="caption"
-                            sx={{
-                                fontFamily: 'Open Sans, sans-serif',
-                                color: '#fff', // Stays white
-                                letterSpacing: '0.03em',
-                                fontWeight: 400,
-                                fontSize: { xs: '.5rem', md: '.6rem' },
-                                ml: 0.3,
-                                mb: '-2px',
-                                lineHeight: 1.1,
-                            }}
-                        >
-                            Saan tayo kakain?
-                        </Typography>
-                        <Typography
-                            variant="h6"
-                            component="div"
-                            sx={{
-                                fontFamily: 'montserrat',
-                                fontWeight: 900,
-                                fontSize: { xs: '.9rem', md: '1.2rem' },
-                                flexGrow: 0,
-                                color: '#fff', // Stays white
-                                letterSpacing: '0.04em',
-                                textShadow: '0 2px 8px rgba(0,0,0,0.18)',
-                                lineHeight: 1.1,
-                                mt: 0,
-                            }}
-                        >
-                            KAHIT SAAN
-                        </Typography>
-                    </Box>
+                    <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 'bold' }}>
+                        Kahit Saan
+                    </Typography>
                 </Box>
             </Toolbar>
-            <List sx={{ flexGrow: 1, pt: 2 }}>
-                {menuItems.map((item) => (
-                    <ListItem key={item.text} disablePadding sx={{ display: 'block' }}>
-                        <ListItemButton
-                            component={RouterLink}
-                            to={item.path}
-                            selected={location.pathname === item.path || (item.path === '/admin/menu' && location.pathname === '/admin')} // Adjust selection logic if needed
-                            onClick={mobileOpen ? handleDrawerToggle : null}
-                            sx={{
-                                minHeight: 48,
-                                justifyContent: 'initial',
-                                px: 2.5,
-                                py: 1.5,
-                                borderRadius: '8px', // Rounded items
-                                color: location.pathname === item.path ? 'primary.main' : 'common.white',
-                                backgroundColor: location.pathname === item.path ? 'rgba(212,175,55,0.15)' : 'transparent',
-                                '&:hover': {
-                                    backgroundColor: 'rgba(212,175,55,0.1)',
-                                    color: 'primary.light', // Lighter gold or white on hover
-                                },
-                                '&.Mui-selected': { // Ensure selected style overrides hover if needed
-                                    color: 'primary.main',
-                                    backgroundColor: 'rgba(212,175,55,0.2)',
-                                },
-                                mb: 0.5, // Space between items
-                            }}
-                        >
-                            <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center', color: 'inherit' }}>
-                                {item.icon}
-                            </ListItemIcon>
-                            <ListItemText primary={item.text} primaryTypographyProps={{ fontFamily: 'Open Sans', fontWeight: location.pathname === item.path ? 600 : 400 }}/>
+            <Divider />
+            <List sx={{ flexGrow: 1 }}>
+                <ListItem disablePadding>
+                    <ListItemButton component={RouterLink} to="/admin" selected={location.pathname === '/admin'}>
+                        <ListItemIcon><LayoutDashboard size={20} /></ListItemIcon>
+                        <ListItemText primary="Dashboard" />
+                    </ListItemButton>
+                </ListItem>
+                {menuItems.map((item, index) => (
+                    <ListItem key={item.text} disablePadding>
+                        <ListItemButton component={RouterLink} to={item.path} selected={location.pathname.startsWith(item.path)}>
+                            <ListItemIcon>{item.icon}</ListItemIcon>
+                            <ListItemText primary={item.text} />
                         </ListItemButton>
                     </ListItem>
                 ))}
             </List>
-            <Box sx={{ flexGrow: 1 }} /> {/* Pushes logout to bottom */}
-            <Divider sx={{ borderColor: 'rgba(255,255,255,0.1)', mt: 'auto' }} />
-            <List sx={{p:1}}>
-                <ListItem disablePadding sx={{ display: 'block' }}>
-                    <ListItemButton
-                        component={RouterLink}
-                        to="/admin/auth/login"
-                        onClick={handleLogout}
-                        sx={{
-                            minHeight: 48,
-                            justifyContent: 'initial',
-                            px: 2.5,
-                            py: 1.5,
-                            borderRadius: '8px',
-                            color: 'common.white',
-                            '&:hover': {
-                                backgroundColor: 'rgba(212,175,55,0.1)',
-                            },
-                        }}
-                    >
-                        <ListItemIcon sx={{ minWidth: 0, mr: 2, justifyContent: 'center', color: 'primary.main' }}>
-                            <LogOut size={20} />
+            <Divider />
+            <List>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={handleThemeToggle}>
+                        <ListItemIcon>
+                            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
                         </ListItemIcon>
-                        <ListItemText primary="Logout" primaryTypographyProps={{ fontFamily: 'Open Sans' }}/>
+                        <ListItemText primary={isDarkMode ? 'Light Mode' : 'Dark Mode'} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton component={RouterLink} to="/">
+                        <ListItemIcon><Home size={20} /></ListItemIcon>
+                        <ListItemText primary="Back to Site" />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem disablePadding>
+                    <ListItemButton onClick={handleLogout}>
+                        <ListItemIcon><LogOut size={20} /></ListItemIcon>
+                        <ListItemText primary="Logout" />
                     </ListItemButton>
                 </ListItem>
             </List>
